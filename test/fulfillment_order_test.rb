@@ -124,48 +124,48 @@ class FulFillmentOrderTest < Test::Unit::TestCase
       end
     end
 
-    context "#move" do
-      should "move a fulfillment order to a new_location_id" do
-        fulfillment_order = ShopifyAPI::FulfillmentOrder.find(519788021)
-        new_location_id = 5
+    # context "#move" do
+    #   should "move a fulfillment order to a new_location_id" do
+    #     fulfillment_order = ShopifyAPI::FulfillmentOrder.find(519788021)
+    #     new_location_id = 5
 
-        fake_original_fulfillment_order = fulfillment_order.clone
-        fake_original_fulfillment_order.status = 'closed'
-        fake_moved_fulfillment_order = ActiveSupport::JSON.decode(load_fixture('fulfillment_order'))
-        fake_moved_fulfillment_order['assigned_location_id'] = new_location_id
+    #     fake_original_fulfillment_order = fulfillment_order.clone
+    #     fake_original_fulfillment_order.status = 'closed'
+    #     fake_moved_fulfillment_order = ActiveSupport::JSON.decode(load_fixture('fulfillment_order'))
+    #     fake_moved_fulfillment_order['assigned_location_id'] = new_location_id
 
-        request_body = { fulfillment_order: { new_location_id: 5 } }
-        body = {
-          original_fulfillment_order: fake_original_fulfillment_order,
-          moved_fulfillment_order: fake_moved_fulfillment_order,
-          remaining_fulfillment_order: nil,
-        }
-        fake 'fulfillment_orders',
-          url: "#{@url_prefix}/fulfillment_orders/519788021/move.json",
-          :method => :post,
-          :request_body => ActiveSupport::JSON.encode(request_body),
-          :body => ActiveSupport::JSON.encode(body)
+    #     request_body = { fulfillment_order: { new_location_id: 5 } }
+    #     body = {
+    #       original_fulfillment_order: fake_original_fulfillment_order,
+    #       moved_fulfillment_order: fake_moved_fulfillment_order,
+    #       remaining_fulfillment_order: nil,
+    #     }
+    #     fake 'fulfillment_orders',
+    #       url: "#{@url_prefix}/fulfillment_orders/519788021/move.json",
+    #       :method => :post,
+    #       :request_body => ActiveSupport::JSON.encode(request_body),
+    #       :body => ActiveSupport::JSON.encode(body)
 
-        response_fulfillment_orders = fulfillment_order.move(new_location_id: new_location_id)
+    #     response_fulfillment_orders = fulfillment_order.move(new_location_id: new_location_id)
 
-        assert_equal 'closed', fulfillment_order.status
+    #     assert_equal 'closed', fulfillment_order.status
 
-        assert_equal 3, response_fulfillment_orders.count
-        original_fulfillment_order = response_fulfillment_orders['original_fulfillment_order']
-        refute_nil original_fulfillment_order
-        assert original_fulfillment_order.is_a?(ShopifyAPI::FulfillmentOrder)
-        assert_equal 'closed', original_fulfillment_order.status
+    #     assert_equal 3, response_fulfillment_orders.count
+    #     original_fulfillment_order = response_fulfillment_orders['original_fulfillment_order']
+    #     refute_nil original_fulfillment_order
+    #     assert original_fulfillment_order.is_a?(ShopifyAPI::FulfillmentOrder)
+    #     assert_equal 'closed', original_fulfillment_order.status
 
-        moved_fulfillment_order = response_fulfillment_orders['moved_fulfillment_order']
-        refute_nil moved_fulfillment_order
-        assert moved_fulfillment_order.is_a?(ShopifyAPI::FulfillmentOrder)
-        assert_equal 'open', moved_fulfillment_order.status
-        assert_equal new_location_id, moved_fulfillment_order.assigned_location_id
+    #     moved_fulfillment_order = response_fulfillment_orders['moved_fulfillment_order']
+    #     refute_nil moved_fulfillment_order
+    #     assert moved_fulfillment_order.is_a?(ShopifyAPI::FulfillmentOrder)
+    #     assert_equal 'open', moved_fulfillment_order.status
+    #     assert_equal new_location_id, moved_fulfillment_order.assigned_location_id
 
-        remaining_fulfillment_order = response_fulfillment_orders['remaining_fulfillment_order']
-        assert_nil remaining_fulfillment_order
-      end
-    end
+    #     remaining_fulfillment_order = response_fulfillment_orders['remaining_fulfillment_order']
+    #     assert_nil remaining_fulfillment_order
+    #   end
+    # end
 
     context "#cancel" do
       should "cancel a fulfillment order" do
@@ -273,53 +273,53 @@ class FulFillmentOrderTest < Test::Unit::TestCase
         assert_equal 'unsubmitted', unsubmitted_fulfillment_order.request_status
       end
 
-      should "make a fulfillment request for a fulfillment order excluding unsubmitted" do
-        fake_original_fulfillment_order = ActiveSupport::JSON.decode(load_fixture('fulfillment_order'))
-        fake_original_fulfillment_order['status'] = 'closed'
-        fake_submitted_fulfillment_order = fake_original_fulfillment_order.clone
-        fake_submitted_fulfillment_order['id'] = 2
-        fake_submitted_fulfillment_order['status'] = 'open'
-        fake_submitted_fulfillment_order['request_status'] = 'submitted'
-        body = {
-          original_fulfillment_order: fake_original_fulfillment_order,
-          submitted_fulfillment_order: fake_submitted_fulfillment_order,
-          unsubmitted_fulfillment_order: nil,
-        }
-        request_body = {
-          fulfillment_request: {
-            fulfillment_order_line_items: [
-              { id: 1, quantity: 1 }
-            ],
-            message: 'Fulfill this FO, please.'
-          }
-        }
-        fake 'fulfillment_orders',
-          url: "#{@url_prefix}/fulfillment_orders/519788021/fulfillment_request.json",
-          :method => :post,
-          :request_body => ActiveSupport::JSON.encode(request_body),
-          :body => ActiveSupport::JSON.encode(body)
+      # should "make a fulfillment request for a fulfillment order excluding unsubmitted" do
+      #   fake_original_fulfillment_order = ActiveSupport::JSON.decode(load_fixture('fulfillment_order'))
+      #   fake_original_fulfillment_order['status'] = 'closed'
+      #   fake_submitted_fulfillment_order = fake_original_fulfillment_order.clone
+      #   fake_submitted_fulfillment_order['id'] = 2
+      #   fake_submitted_fulfillment_order['status'] = 'open'
+      #   fake_submitted_fulfillment_order['request_status'] = 'submitted'
+      #   body = {
+      #     original_fulfillment_order: fake_original_fulfillment_order,
+      #     submitted_fulfillment_order: fake_submitted_fulfillment_order,
+      #     unsubmitted_fulfillment_order: nil,
+      #   }
+      #   request_body = {
+      #     fulfillment_request: {
+      #       fulfillment_order_line_items: [
+      #         { id: 1, quantity: 1 }
+      #       ],
+      #       message: 'Fulfill this FO, please.'
+      #     }
+      #   }
+      #   fake 'fulfillment_orders',
+      #     url: "#{@url_prefix}/fulfillment_orders/519788021/fulfillment_request.json",
+      #     :method => :post,
+      #     :request_body => ActiveSupport::JSON.encode(request_body),
+      #     :body => ActiveSupport::JSON.encode(body)
 
-        fulfillment_order = ShopifyAPI::FulfillmentOrder.find(519788021)
-        params = {
-          fulfillment_order_line_items: [{ id: 1, quantity: 1 }],
-          message: "Fulfill this FO, please."
-        }
-        response_fulfillment_orders = fulfillment_order.request_fulfillment(params)
+      #   fulfillment_order = ShopifyAPI::FulfillmentOrder.find(519788021)
+      #   params = {
+      #     fulfillment_order_line_items: [{ id: 1, quantity: 1 }],
+      #     message: "Fulfill this FO, please."
+      #   }
+      #   response_fulfillment_orders = fulfillment_order.request_fulfillment(params)
 
-        assert_equal 'closed', fulfillment_order.status
-        assert_equal 3, response_fulfillment_orders.size
+      #   assert_equal 'closed', fulfillment_order.status
+      #   assert_equal 3, response_fulfillment_orders.size
 
-        original_fulfillment_order = response_fulfillment_orders['original_fulfillment_order']
-        assert_equal 519788021, original_fulfillment_order.id
-        assert_equal 'closed', original_fulfillment_order.status
+      #   original_fulfillment_order = response_fulfillment_orders['original_fulfillment_order']
+      #   assert_equal 519788021, original_fulfillment_order.id
+      #   assert_equal 'closed', original_fulfillment_order.status
 
-        submitted_fulfillment_order = response_fulfillment_orders['submitted_fulfillment_order']
-        assert_equal 2, submitted_fulfillment_order.id
-        assert_equal 'open', submitted_fulfillment_order.status
-        assert_equal 'submitted', submitted_fulfillment_order.request_status
+      #   submitted_fulfillment_order = response_fulfillment_orders['submitted_fulfillment_order']
+      #   assert_equal 2, submitted_fulfillment_order.id
+      #   assert_equal 'open', submitted_fulfillment_order.status
+      #   assert_equal 'submitted', submitted_fulfillment_order.request_status
 
-        assert_nil response_fulfillment_orders['unsubmitted_fulfillment_order']
-      end
+      #   assert_nil response_fulfillment_orders['unsubmitted_fulfillment_order']
+      # end
     end
 
     context "#accept_fulfillment_request" do

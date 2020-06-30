@@ -129,9 +129,11 @@ module ShopifyAPI
       return load_attributes_from_response(response) if response.code != '200'
 
       keyed_fulfillment_orders = ActiveSupport::JSON.decode(response.body)
-      keyed_fulfillment_orders.transform_values do |fulfillment_order_attributes|
-        FulfillmentOrder.new(fulfillment_order_attributes) if fulfillment_order_attributes
+      result = {}
+      keyed_fulfillment_orders.each do |key, value|
+        result[key] = FulfillmentOrder.new(value) if value
       end
+      result
     end
   end
 end
